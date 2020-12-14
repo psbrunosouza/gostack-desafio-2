@@ -3,7 +3,7 @@
 Criação de um backend para armazenar repositórios.
 
 O backend deveria conter uma lista de repositórios, com os seguintes campos: id, title, techs ["..., ..."], likes. 
-```JSON
+```javascript
   repositories = {
     id,
     title, 
@@ -34,7 +34,7 @@ no delete eu também utilizei o middleware de validação do id, caso existisse 
 para os likes eu criei uma estrutura de dados separadas, que continha id, like (quantidade de likes), por ser um post, o valor era sempre
 criado novamente, ao invés de ser atualizado, e possuia conexão com o projeto através do id passado através do request.param.
 
-```JSON
+```javascript
   likes = {
     id,
     likes
