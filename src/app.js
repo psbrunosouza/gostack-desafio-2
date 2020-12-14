@@ -72,14 +72,22 @@ app.delete("/repositories/:id", validateRepositoryId,  (request, response) => {
   return response.status(204).send();
 });
 
-app.post("/repositories/:id/like", (request, response) => {
+app.post("/repositories/:id/like", validateRepositoryId, (request, response) => {
   const {id} = request.params;
   const { like } = request.body;
 
-  const projectLike = {id, like};
+  
+  const repositoryLikes = {id, like: 1}
 
-  likes.push(projectLike);
-  return response.json(projectLike);
+  const likeIndex = likes.findIndex(likes => likes.id === id);
+
+  if(likeIndex < 0){
+    likes.push(repositoryLikes);
+    return response.status(204).json(repositoryLikes);
+  }
+
+  likes[likeIndex].like += like;
+  return response.json(likes);
 });
 
 module.exports = app;
