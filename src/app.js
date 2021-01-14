@@ -12,16 +12,12 @@ app.use(cors());
 
 // lista de repositorios
 const repositories = [];
-const likes = [];
 
 function validateRepositoryId(resquest, response, next){
-
   const { id } = resquest.params;
-
   if(!isUuid(id)){
     return response.status(400).json("error: id not found");
   }
-
   return next();
 }
 
@@ -34,7 +30,7 @@ app.post("/repositories", (request, response) => {
   // captura os dados da requisicao
   const { title, url, techs} = request.body;
   // monta a estrutura de um unico repositorio
-  const repository = {id: uuid(), title, url, techs};
+  const repository = {id: uuid(), url, title, techs, likes: 0};
   // atribui esse repositorio a lista de repositorios
   repositories.push(repository);
   // retorna repositorio cadastrado como resposta ao usuario
@@ -52,7 +48,8 @@ app.put("/repositories/:id", validateRepositoryId,  (request, response) => {
     return response.status(400).json("error: repository not found");
   }
 
-  const repository = { id, title, url, techs}
+  const repository = { id, title, url, techs, likes: likes = 
+    repositories[repositoryIndex].likes}
 
   repositories[repositoryIndex] = repository;
   return response.status(200).json(repository);
@@ -74,20 +71,12 @@ app.delete("/repositories/:id", validateRepositoryId,  (request, response) => {
 
 app.post("/repositories/:id/like", validateRepositoryId, (request, response) => {
   const {id} = request.params;
-  const { like } = request.body;
-
-  
-  const repositoryLikes = {id, like: 1}
-
-  const likeIndex = likes.findIndex(likes => likes.id === id);
-
-  if(likeIndex < 0){
-    likes.push(repositoryLikes);
-    return response.status(204).json(repositoryLikes);
+  const repositoryIndex = repositories.findIndex(likes => likes.id === id);
+  if(repositoryIndex < 0){
+    return response.status(404).send();
   }
-
-  likes[likeIndex].like += like;
-  return response.json(likes);
+  repositories[repositoryIndex].likes += 1;
+  return response.json(repositories[repositoryIndex]);
 });
 
 //
